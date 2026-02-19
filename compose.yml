@@ -1,9 +1,0 @@
-services:
-  graphql-api:
-    build: .
-    ports:
-      - "8080:8080"  # Map port 8080 of the container to port 8080 on the host
-    environment:
-      - ENV=development  # You can set environment variables here
-    volumes:
-      - .:/app  # Mount the current directory to /app in the container for live updates
