@@ -1,0 +1,44 @@
+info:
+  name: Batch Create Transactions
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/transactions/batch"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+          "transactions": [
+              {
+                  "name": "Transaction 1",
+                  "amount": -10.00,
+                  "account": "Checking",
+                  "date": "2024-01-01"
+              },
+              {
+                  "name": "Transaction 2",
+                  "amount": -20.00,
+                  "account": "Checking",
+                  "date": "2024-01-02"
+              },
+              {
+                  "name": "Transaction 3",
+                  "amount": -30.00,
+                  "account": "Checking",
+                  "date": "2024-01-03"
+              }
+          ],
+          "skipDuplicates": false
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

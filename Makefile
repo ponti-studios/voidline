@@ -1,4 +1,4 @@
-# Makefile for Go gqlgen server
+# Makefile for gogogo CLI and server
 
 # Variables
 GOCMD=go
@@ -7,7 +7,6 @@ GOCLEAN=$(GOCMD) clean
 GOMOD=$(GOCMD) mod
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
-GQLGEN=gqlgen
 GOOSE=go run github.com/pressly/goose/v3@latest
 
 # Directories
@@ -15,7 +14,7 @@ BINDIR=bin
 SRCDIR=.
 
 # Binary name
-BINARY_NAME=myapp
+BINARY_NAME=gogogo
 
 # Database
 DB_PATH ?= $(HOME)/.config/hominem/db.sqlite
@@ -26,7 +25,11 @@ all: build
 
 # Build the project
 build:
-	$(GOBUILD) -o $(BINDIR)/$(BINARY_NAME) $(SRCDIR)
+	$(GOBUILD) -o $(BINDIR)/$(BINARY_NAME) ./cmd/cli
+
+# Build server only
+build-server:
+	$(GOBUILD) -o $(BINDIR)/server ./cmd/cli
 
 # Clean the project
 clean:
@@ -37,10 +40,6 @@ clean:
 test:
 	$(GOTEST) -v ./...
 
-# Run gqlgen to generate GraphQL server code
-generate:
-	go run github.com/99designs/gqlgen generate
-
 # Tidy up the Go module
 tidy:
 	$(GOMOD) tidy
@@ -49,13 +48,13 @@ tidy:
 deps:
 	$(GOGET) -u ./...
 
-# Run the application
+# Run the CLI
 run: build
 	./$(BINDIR)/$(BINARY_NAME)
 
-# Install gqlgen
-install-gqlgen:
-	$(GOGET) github.com/99designs/gqlgen
+# Run the server
+run-server: build-server
+	./$(BINDIR)/server
 
 # Install goose
 install-goose:
@@ -79,21 +78,21 @@ migrate-reset:
 
 # Help message
 help:
-	@echo "Makefile for Go gqlgen server"
+	@echo "Makefile for gogogo CLI and server"
 	@echo ""
 	@echo "Usage:"
 	@echo "  make <target>"
 	@echo ""
 	@echo "Targets:"
 	@echo "  all              Build the project"
-	@echo "  build            Build the project"
+	@echo "  build            Build the CLI"
+	@echo "  build-server     Build the server"
 	@echo "  clean            Clean the project"
 	@echo "  test             Run tests"
-	@echo "  generate         Run gqlgen to generate GraphQL server code"
 	@echo "  tidy             Tidy up the Go module"
 	@echo "  deps             Get dependencies"
-	@echo "  run              Run the application"
-	@echo "  install-gqlgen   Install gqlgen"
+	@echo "  run              Run the CLI"
+	@echo "  run-server       Run the server"
 	@echo "  install-goose    Install goose"
 	@echo "  migrate-up       Run migrations up"
 	@echo "  migrate-down     Run migrations down"

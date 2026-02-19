@@ -1,0 +1,19 @@
+opencollection: 1.0.0
+
+info:
+  name: Finance API
+
+request:
+  variables:
+    - name: baseUrl
+      value: http://localhost:8080
+
+docs:
+  content: REST API for financial transaction management
+  type: text/markdown
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git

@@ -1,0 +1,29 @@
+info:
+  name: Create Transaction
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/transactions"
+  headers:
+    - name: Content-Type
+      value: application/json
+  body:
+    type: json
+    data: |-
+      {
+          "name": "Grocery Store",
+          "amount": -50.00,
+          "account": "Checking",
+          "category": "Food",
+          "date": "2024-01-15",
+          "note": "Weekly groceries"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

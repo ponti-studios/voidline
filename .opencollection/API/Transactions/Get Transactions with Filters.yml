@@ -1,0 +1,34 @@
+info:
+  name: Get Transactions with Filters
+  type: http
+  seq: 2
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/v1/transactions?account=Checking&category=Food&start_date=2024-01-01&end_date=2024-12-31&page=1&per_page=20"
+  params:
+    - name: account
+      value: Checking
+      type: query
+    - name: category
+      value: Food
+      type: query
+    - name: start_date
+      value: 2024-01-01
+      type: query
+    - name: end_date
+      value: 2024-12-31
+      type: query
+    - name: page
+      value: "1"
+      type: query
+    - name: per_page
+      value: "20"
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
