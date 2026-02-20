@@ -1,14 +1,13 @@
 {
-	"terminal.integrated.shellIntegration.enabled": true,
-	"cSpell.allowCompoundWords": true,
-	"cSpell.customDictionaries": {
-		"typescript": true
-	},
-	"gopls": {
-		"buildFlags": ["-tags=tools"],
-		"build.directoryFilters": [
-			"-**/node_modules",
-			"-./tools.go",
-		]
-	}
+    "chat.promptFilesRecommendations": {
+        "speckit.constitution": true,
+        "speckit.specify": true,
+        "speckit.plan": true,
+        "speckit.tasks": true,
+        "speckit.implement": true
+    },
+    "chat.tools.terminal.autoApprove": {
+        ".specify/scripts/bash/": true,
+        ".specify/scripts/powershell/": true
+    }
 }

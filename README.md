@@ -1,6 +1,6 @@
 # voidline
 
-CLI utilities and tools for finance, imports, and server operations.
+CLI utilities and tools for finance, frontmatter, imports, flattening, and server operations.
 
 ## Build
 
@@ -15,6 +15,14 @@ make build
 ```
 
 ## Command Overview
+
+Current top-level commands:
+
+- `finance`
+- `frontmatter`
+- `import`
+- `flatten`
+- `server`
 
 ### finance
 
@@ -48,6 +56,39 @@ Report and dashboard:
 ./voidline finance report --db /path/to/db.sqlite --type transactions --format table
 ./voidline finance dashboard --db /path/to/db.sqlite --format json
 ```
+
+### frontmatter
+
+Validate, migrate, and manage markdown frontmatter.
+
+```bash
+./bin/voidline frontmatter --help
+```
+
+Core subcommands:
+
+- walk: List markdown files under a root
+- validate: Validate frontmatter against a schema
+- migrate: Apply schema-guided migration (dry-run by default)
+- slug detect: Detect slug collisions
+- slug resolve: Resolve slug collisions by policy
+
+Examples:
+
+```bash
+./bin/voidline frontmatter walk --root ./testdata/frontmatter-cli/notebook --output json
+./bin/voidline frontmatter validate --root ./testdata/frontmatter-cli/notebook/personal --schema personal --output json
+./bin/voidline frontmatter migrate --root ./testdata/frontmatter-cli/notebook/personal --schema personal --strategy fill --output text
+./bin/voidline frontmatter migrate --root ./testdata/frontmatter-cli/notebook/personal --schema personal --write --backup --output text
+./bin/voidline frontmatter slug detect --root ./testdata/frontmatter-cli/notebook/personal/collision --scope directory --output json
+./bin/voidline frontmatter slug resolve --slug same-slug --policy increment --existing-slugs same-slug --existing-slugs same-slug-2 --output json
+```
+
+Exit code semantics:
+
+- `0`: success
+- `1`: domain validation/collision failure
+- `2`: runtime or usage failure
 
 ### import
 

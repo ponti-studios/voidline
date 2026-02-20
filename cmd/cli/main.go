@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"os"
 
 	"github.com/charmbracelet/fang"
@@ -9,6 +10,7 @@ import (
 
 	"voidline/cmd/cli/commands/finance"
 	"voidline/cmd/cli/commands/flatten"
+	"voidline/cmd/cli/commands/frontmatter"
 	"voidline/cmd/cli/commands/importcmd/amazon"
 	"voidline/cmd/cli/commands/importcmd/apple"
 	"voidline/cmd/cli/commands/importcmd/health"
@@ -20,6 +22,18 @@ import (
 )
 
 func main() {
+	rootCmd := rootCommand()
+
+	if err := fang.Execute(context.Background(), rootCmd); err != nil {
+		var exitCoder interface{ ExitCode() int }
+		if errors.As(err, &exitCoder) {
+			os.Exit(exitCoder.ExitCode())
+		}
+		os.Exit(1)
+	}
+}
+
+func rootCommand() *cobra.Command {
 	rootCmd := &cobra.Command{
 		Use:   "voidline",
 		Short: "CLI utilities and tools",
@@ -27,12 +41,10 @@ func main() {
 
 	rootCmd.AddCommand(flatten.Command())
 	rootCmd.AddCommand(finance.Command())
+	rootCmd.AddCommand(frontmatter.Command())
 	rootCmd.AddCommand(serverCmd())
 	rootCmd.AddCommand(importCmd())
-
-	if err := fang.Execute(context.Background(), rootCmd); err != nil {
-		os.Exit(1)
-	}
+	return rootCmd
 }
 
 func serverCmd() *cobra.Command {

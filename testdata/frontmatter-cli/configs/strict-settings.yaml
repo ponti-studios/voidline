@@ -1,0 +1,27 @@
+version: 1
+frontmatter:
+  schemas:
+    personal:
+      required: [title, uid, slug, created, updated, type, status, summary]
+      defaults:
+        type: reference
+        status: draft
+      generators:
+        uid:
+          name: uuid-v4
+        slug:
+          name: kebab-filename
+        created:
+          name: file-ctime
+        updated:
+          name: utc-now
+      validators:
+        type:
+          allowed: [identity, lifestyle, goals, relationships, finance, reference, tracking]
+        status:
+          allowed: [draft, published, private, archived]
+        slug:
+          pattern: "^[a-z0-9][a-z0-9-]*[a-z0-9]$"
+logging:
+  level: info
+  json: false

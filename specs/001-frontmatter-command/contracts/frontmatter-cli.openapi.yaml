@@ -1,0 +1,278 @@
+openapi: 3.0.3
+info:
+  title: Voidline Frontmatter CLI Contract
+  version: 0.1.0
+  description: |
+    Contract-oriented representation of frontmatter CLI operations for automation and agent integration.
+    Exit-code semantics: 0=success, 1=domain failure, 2=runtime or usage failure.
+servers:
+  - url: cli://voidline/frontmatter
+paths:
+  /walk:
+    post:
+      summary: Enumerate markdown files under a root
+      operationId: walkFrontmatterFiles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalkRequest'
+      responses:
+        '200':
+          description: File list generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WalkResponse'
+        '400':
+          description: Invalid request
+        '500':
+          description: Runtime failure
+  /validate:
+    post:
+      summary: Validate frontmatter across markdown files
+      operationId: validateFrontmatter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateRequest'
+      responses:
+        '200':
+          description: Validation run completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionResponse'
+        '422':
+          description: Domain validation errors present (maps to CLI exit code 1)
+        '500':
+          description: Runtime failure
+  /migrate:
+    post:
+      summary: Migrate frontmatter with optional write and backup behavior
+      operationId: migrateFrontmatter
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MigrateRequest'
+      responses:
+        '200':
+          description: Migration run completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionResponse'
+        '500':
+          description: Runtime failure
+  /slug/detect:
+    post:
+      summary: Detect slug collisions for configured scope
+      operationId: detectSlugCollisions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SlugDetectRequest'
+      responses:
+        '200':
+          description: Collision report generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlugDetectResponse'
+        '500':
+          description: Runtime failure
+  /slug/resolve:
+    post:
+      summary: Resolve a single slug against existing set according to policy
+      operationId: resolveSlug
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SlugResolveRequest'
+      responses:
+        '200':
+          description: Resolved slug returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SlugResolveResponse'
+        '422':
+          description: Could not resolve under policy/attempt constraints
+        '500':
+          description: Runtime failure
+components:
+  schemas:
+    WalkRequest:
+      type: object
+      required: [root]
+      properties:
+        root:
+          type: string
+        includeHidden:
+          type: boolean
+          default: false
+        extensions:
+          type: array
+          items:
+            type: string
+        includeGlobs:
+          type: array
+          items:
+            type: string
+        excludeGlobs:
+          type: array
+          items:
+            type: string
+        maxFiles:
+          type: integer
+          minimum: 0
+    WalkResponse:
+      type: object
+      required: [files, summary]
+      properties:
+        files:
+          type: array
+          items:
+            type: string
+        summary:
+          $ref: '#/components/schemas/CommandSummary'
+    ValidateRequest:
+      allOf:
+        - $ref: '#/components/schemas/WalkRequest'
+        - type: object
+          required: [schema]
+          properties:
+            schema:
+              type: string
+            configPath:
+              type: string
+    MigrateRequest:
+      allOf:
+        - $ref: '#/components/schemas/ValidateRequest'
+        - type: object
+          properties:
+            strategy:
+              type: string
+            write:
+              type: boolean
+              default: false
+            backup:
+              type: boolean
+              default: false
+    ActionResponse:
+      type: object
+      required: [actions, summary]
+      properties:
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileActionResult'
+        summary:
+          $ref: '#/components/schemas/CommandSummary'
+    FileActionResult:
+      type: object
+      required: [path, hasChanges, errors]
+      properties:
+        path:
+          type: string
+        hasChanges:
+          type: boolean
+        errors:
+          type: array
+          items:
+            type: string
+        result:
+          type: object
+          additionalProperties: true
+    SlugDetectRequest:
+      allOf:
+        - $ref: '#/components/schemas/WalkRequest'
+        - type: object
+          properties:
+            scope:
+              type: string
+              enum: [directory, project, global]
+              default: directory
+    SlugDetectResponse:
+      type: object
+      required: [collisions, summary]
+      properties:
+        collisions:
+          type: array
+          items:
+            $ref: '#/components/schemas/SlugCollisionResult'
+        summary:
+          $ref: '#/components/schemas/CommandSummary'
+    SlugCollisionResult:
+      type: object
+      required: [slug, path, collisions]
+      properties:
+        slug:
+          type: string
+        path:
+          type: string
+        collisions:
+          type: array
+          items:
+            type: string
+    SlugResolveRequest:
+      type: object
+      required: [slug, policy]
+      properties:
+        slug:
+          type: string
+        policy:
+          type: string
+          enum: [fail, increment, append-uid]
+        maxAttempts:
+          type: integer
+          minimum: 1
+        existingSlugs:
+          type: array
+          items:
+            type: string
+    SlugResolveResponse:
+      type: object
+      required: [slug, resolvedSlug, summary]
+      properties:
+        slug:
+          type: string
+        resolvedSlug:
+          type: string
+        summary:
+          $ref: '#/components/schemas/CommandSummary'
+    CommandSummary:
+      type: object
+      required: [command, processedFiles, errorFiles, exitCode]
+      properties:
+        command:
+          type: string
+        root:
+          type: string
+        totalFiles:
+          type: integer
+        processedFiles:
+          type: integer
+        changedFiles:
+          type: integer
+        errorFiles:
+          type: integer
+        warnings:
+          type: array
+          items:
+            type: string
+        durationMs:
+          type: integer
+          format: int64
+        exitCode:
+          type: integer
+          enum: [0, 1, 2]
