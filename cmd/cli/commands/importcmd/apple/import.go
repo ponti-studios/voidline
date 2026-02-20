@@ -7,9 +7,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"gogogo/internal/application/apple"
-	"gogogo/internal/infrastructure/config"
-	"gogogo/internal/infrastructure/persistence/sqlite"
+	"voidline/internal/application/apple"
+	"voidline/internal/infrastructure/config"
+	"voidline/internal/infrastructure/persistence/sqlite"
 )
 
 type ImportCommand struct {

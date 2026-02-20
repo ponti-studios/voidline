@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"gogogo/cmd/cli/commands/server"
+	"voidline/cmd/cli/commands/server"
 )
 
 func main() {

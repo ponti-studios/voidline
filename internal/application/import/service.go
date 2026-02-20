@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"gogogo/internal/domain/account"
-	"gogogo/internal/domain/transaction"
+	"voidline/internal/domain/account"
+	"voidline/internal/domain/transaction"
 )
 
 // ImportOptions contains options for the import operation

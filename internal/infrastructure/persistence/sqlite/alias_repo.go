@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"gogogo/internal/domain/account"
+	"voidline/internal/domain/account"
 )
 
 // AliasRepository implements the account.AliasRepository interface

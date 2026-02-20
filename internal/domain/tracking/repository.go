@@ -3,7 +3,7 @@ package tracking
 import (
 	"context"
 
-	"gogogo/internal/domain/shared"
+	"voidline/internal/domain/shared"
 )
 
 // TrackingEntryRepository handles persistence of tracking entries

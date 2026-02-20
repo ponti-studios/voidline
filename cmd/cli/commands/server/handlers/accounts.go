@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/gin-gonic/gin"
-	"gogogo/internal/application/services"
+	"voidline/internal/application/services"
 )
 
 // AccountsHandler handles account-related requests

@@ -7,21 +7,21 @@ import (
 	"github.com/charmbracelet/fang"
 	"github.com/spf13/cobra"
 
-	"gogogo/cmd/cli/commands/finance"
-	"gogogo/cmd/cli/commands/flatten"
-	"gogogo/cmd/cli/commands/importcmd/amazon"
-	"gogogo/cmd/cli/commands/importcmd/apple"
-	"gogogo/cmd/cli/commands/importcmd/health"
-	"gogogo/cmd/cli/commands/importcmd/music"
-	"gogogo/cmd/cli/commands/importcmd/openai"
-	"gogogo/cmd/cli/commands/importcmd/social"
-	"gogogo/cmd/cli/commands/importcmd/typingmind"
-	"gogogo/cmd/cli/commands/server"
+	"voidline/cmd/cli/commands/finance"
+	"voidline/cmd/cli/commands/flatten"
+	"voidline/cmd/cli/commands/importcmd/amazon"
+	"voidline/cmd/cli/commands/importcmd/apple"
+	"voidline/cmd/cli/commands/importcmd/health"
+	"voidline/cmd/cli/commands/importcmd/music"
+	"voidline/cmd/cli/commands/importcmd/openai"
+	"voidline/cmd/cli/commands/importcmd/social"
+	"voidline/cmd/cli/commands/importcmd/typingmind"
+	"voidline/cmd/cli/commands/server"
 )
 
 func main() {
 	rootCmd := &cobra.Command{
-		Use:   "gogogo",
+		Use:   "voidline",
 		Short: "CLI utilities and tools",
 	}
 

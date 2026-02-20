@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"gogogo/internal/application/music"
-	"gogogo/internal/infrastructure/config"
-	"gogogo/internal/infrastructure/persistence/sqlite"
+	"voidline/internal/application/music"
+	"voidline/internal/infrastructure/config"
+	"voidline/internal/infrastructure/persistence/sqlite"
 )
 
 type AppleCommand struct {

@@ -9,8 +9,8 @@ import (
 	"regexp"
 	"strings"
 
-	"gogogo/internal/domain/apple"
-	"gogogo/internal/infrastructure/persistence/sqlite"
+	"voidline/internal/domain/apple"
+	"voidline/internal/infrastructure/persistence/sqlite"
 )
 
 type Service struct {

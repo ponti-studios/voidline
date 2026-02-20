@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"gogogo/internal/domain/account"
+	"voidline/internal/domain/account"
 )
 
 type FinanceDashboardService struct {

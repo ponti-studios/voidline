@@ -3,10 +3,10 @@ package services
 import (
 	"database/sql"
 
-	"gogogo/internal/domain/account"
-	"gogogo/internal/domain/category"
-	"gogogo/internal/domain/transaction"
-	"gogogo/internal/infrastructure/persistence/sqlite"
+	"voidline/internal/domain/account"
+	"voidline/internal/domain/category"
+	"voidline/internal/domain/transaction"
+	"voidline/internal/infrastructure/persistence/sqlite"
 )
 
 func newTestTransactionRepository(db *sql.DB) transaction.Repository {

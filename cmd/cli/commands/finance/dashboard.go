@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"gogogo/internal/application/services"
-	"gogogo/internal/infrastructure/persistence/sqlite"
+	"voidline/internal/application/services"
+	"voidline/internal/infrastructure/persistence/sqlite"
 )
 
 type DashboardCommand struct {

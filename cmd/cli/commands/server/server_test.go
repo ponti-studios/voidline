@@ -10,9 +10,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
-	"gogogo/cmd/cli/commands/server/handlers"
-	"gogogo/internal/application/services"
-	"gogogo/internal/infrastructure/persistence/sqlite"
+	"voidline/cmd/cli/commands/server/handlers"
+	"voidline/internal/application/services"
+	"voidline/internal/infrastructure/persistence/sqlite"
 )
 
 type ServerTestSuite struct {

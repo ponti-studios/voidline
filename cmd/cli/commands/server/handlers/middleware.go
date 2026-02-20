@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	apperrors "gogogo/internal/application/errors"
-	"gogogo/internal/application/validation"
+	apperrors "voidline/internal/application/errors"
+	"voidline/internal/application/validation"
 )
 
 // ErrorResponse represents a standard error response

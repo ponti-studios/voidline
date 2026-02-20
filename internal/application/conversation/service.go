@@ -10,8 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"gogogo/internal/domain/conversation"
-	"gogogo/internal/infrastructure/persistence/sqlite"
+	"voidline/internal/domain/conversation"
+	"voidline/internal/infrastructure/persistence/sqlite"
 )
 
 type Service struct {

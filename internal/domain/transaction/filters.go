@@ -1,7 +1,7 @@
 package transaction
 
 import (
-	"gogogo/internal/domain/timeutil"
+	"voidline/internal/domain/timeutil"
 )
 
 // Filter represents the filter criteria for querying transactions

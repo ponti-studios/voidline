@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"gogogo/internal/domain/shared"
+	"voidline/internal/domain/shared"
 	"gopkg.in/yaml.v2"
 )
 

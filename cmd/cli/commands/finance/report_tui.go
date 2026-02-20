@@ -8,7 +8,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
-	"gogogo/internal/application/services"
+	"voidline/internal/application/services"
 )
 
 var (

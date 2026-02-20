@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"gogogo/internal/domain/account"
+	"voidline/internal/domain/account"
 )
 
 // AccountRepository implements the account.Repository interface

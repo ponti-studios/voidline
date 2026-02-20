@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"time"
 
-	"gogogo/internal/domain/music"
-	"gogogo/internal/infrastructure/persistence/sqlite"
+	"voidline/internal/domain/music"
+	"voidline/internal/infrastructure/persistence/sqlite"
 )
 
 type Service struct {

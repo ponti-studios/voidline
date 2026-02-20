@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"gogogo/internal/domain/conversation"
+	"voidline/internal/domain/conversation"
 )
 
 type ConversationRepository struct {

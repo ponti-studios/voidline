@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"gogogo/cmd/cli/commands/finance/budget"
+	"voidline/cmd/cli/commands/finance/budget"
 )
 
 func Command() *cobra.Command {

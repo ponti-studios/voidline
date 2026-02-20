@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"gogogo/internal/domain/timeutil"
-	"gogogo/internal/domain/transaction"
+	"voidline/internal/domain/timeutil"
+	"voidline/internal/domain/transaction"
 )
 
 // Reader handles CSV file reading for transactions

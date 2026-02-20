@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"gogogo/internal/domain/shared"
+	"voidline/internal/domain/shared"
 )
 
 // TrackingEntry represents a tracking entry from markdown files or new entries

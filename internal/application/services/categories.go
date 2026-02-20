@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"gogogo/internal/application/errors"
-	"gogogo/internal/application/validation"
-	"gogogo/internal/domain/category"
+	"voidline/internal/application/errors"
+	"voidline/internal/application/validation"
+	"voidline/internal/domain/category"
 )
 
 type FinanceCategoriesService struct {

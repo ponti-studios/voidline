@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"gogogo/internal/domain/apple"
+	"voidline/internal/domain/apple"
 )
 
 type AppleRepository struct {

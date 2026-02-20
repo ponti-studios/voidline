@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"gogogo/internal/domain/amazon"
-	"gogogo/internal/infrastructure/persistence/sqlite"
+	"voidline/internal/domain/amazon"
+	"voidline/internal/infrastructure/persistence/sqlite"
 )
 
 type Service struct {

@@ -10,8 +10,8 @@ import (
 
 	"github.com/charmbracelet/lipgloss"
 
-	"gogogo/internal/application/services"
-	"gogogo/internal/infrastructure/persistence/sqlite"
+	"voidline/internal/application/services"
+	"voidline/internal/infrastructure/persistence/sqlite"
 )
 
 var reportTitleStyle = lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#7DD3FC"))

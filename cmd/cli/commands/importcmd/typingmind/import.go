@@ -8,9 +8,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"gogogo/internal/application/conversation"
-	"gogogo/internal/infrastructure/config"
-	"gogogo/internal/infrastructure/persistence/sqlite"
+	"voidline/internal/application/conversation"
+	"voidline/internal/infrastructure/config"
+	"voidline/internal/infrastructure/persistence/sqlite"
 )
 
 func Command() *cobra.Command {

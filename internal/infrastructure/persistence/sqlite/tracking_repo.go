@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	"gogogo/internal/domain/shared"
-	"gogogo/internal/domain/tracking"
+	"voidline/internal/domain/shared"
+	"voidline/internal/domain/tracking"
 )
 
 // TrackingEntryRepo implements tracking.TrackingEntryRepository for SQLite

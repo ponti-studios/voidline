@@ -1,4 +1,4 @@
-# gogogo
+# voidline
 
 CLI utilities and tools for finance, imports, and server operations.
 
@@ -11,7 +11,7 @@ make build
 ## Run
 
 ```bash
-./bin/gogogo --help
+./bin/voidline --help
 ```
 
 ## Command Overview
@@ -21,7 +21,7 @@ make build
 Finance and budget utilities.
 
 ```bash
-./gogogo finance --help
+./voidline finance --help
 ```
 
 Budget subcommands:
@@ -35,18 +35,18 @@ Budget subcommands:
 Examples:
 
 ```bash
-./gogogo finance budget init
-./gogogo finance budget show --view categories
-./gogogo finance budget calendar --month 2026-02
-./gogogo finance budget scenario --reduce-expense 'Dining:50'
-./gogogo finance budget export --format yaml
+./voidline finance budget init
+./voidline finance budget show --view categories
+./voidline finance budget calendar --month 2026-02
+./voidline finance budget scenario --reduce-expense 'Dining:50'
+./voidline finance budget export --format yaml
 ```
 
 Report and dashboard:
 
 ```bash
-./gogogo finance report --db /path/to/db.sqlite --type transactions --format table
-./gogogo finance dashboard --db /path/to/db.sqlite --format json
+./voidline finance report --db /path/to/db.sqlite --type transactions --format table
+./voidline finance dashboard --db /path/to/db.sqlite --format json
 ```
 
 ### import
@@ -54,7 +54,7 @@ Report and dashboard:
 Import data from multiple sources.
 
 ```bash
-./gogogo import --help
+./voidline import --help
 ```
 
 Available imports:
@@ -70,11 +70,11 @@ Available imports:
 Examples:
 
 ```bash
-./gogogo import amazon --source /path/to/amazon --db /path/to/db.sqlite
-./gogogo import health --source /path/to/health --source-type all
-./gogogo import music spotify --source /path/to/spotify --db /path/to/db.sqlite
-./gogogo import typingmind --source /path/to/typingmind.json
-./gogogo import openai --source /path/to/openai-export
+./voidline import amazon --source /path/to/amazon --db /path/to/db.sqlite
+./voidline import health --source /path/to/health --source-type all
+./voidline import music spotify --source /path/to/spotify --db /path/to/db.sqlite
+./voidline import typingmind --source /path/to/typingmind.json
+./voidline import openai --source /path/to/openai-export
 ```
 
 ### flatten
@@ -82,7 +82,7 @@ Examples:
 Flatten a directory structure into a single folder.
 
 ```bash
-./gogogo flatten --dir /path/to/dir --d --p
+./voidline flatten --dir /path/to/dir --d --p
 ```
 
 Flags:
@@ -96,7 +96,7 @@ Flags:
 Start the REST API server.
 
 ```bash
-./gogogo server
+./voidline server
 ```
 
 ## Development

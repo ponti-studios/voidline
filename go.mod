@@ -1,4 +1,4 @@
-module gogogo
+module voidline
 
 go 1.25
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"gogogo/internal/testutil/testdb"
+	"voidline/internal/testutil/testdb"
 	"github.com/stretchr/testify/assert"
 )
 

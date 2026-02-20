@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"gogogo/internal/infrastructure/persistence/sqlite"
+	"voidline/internal/infrastructure/persistence/sqlite"
 
-	healthdomain "gogogo/internal/domain/health"
+	healthdomain "voidline/internal/domain/health"
 )
 
 type Service struct {

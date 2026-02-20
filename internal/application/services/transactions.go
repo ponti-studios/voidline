@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"time"
 
-	"gogogo/internal/application/errors"
-	"gogogo/internal/application/validation"
-	"gogogo/internal/domain/timeutil"
-	"gogogo/internal/domain/transaction"
+	"voidline/internal/application/errors"
+	"voidline/internal/application/validation"
+	"voidline/internal/domain/timeutil"
+	"voidline/internal/domain/transaction"
 )
 
 type FinanceTransactionsService struct {

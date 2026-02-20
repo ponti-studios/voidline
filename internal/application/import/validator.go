@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"gogogo/internal/domain/transaction"
+	"voidline/internal/domain/transaction"
 )
 
 // Validator handles validation of imported transactions

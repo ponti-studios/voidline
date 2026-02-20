@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"strings"
 
-	"gogogo/internal/domain/timeutil"
-	"gogogo/internal/domain/transaction"
+	"voidline/internal/domain/timeutil"
+	"voidline/internal/domain/transaction"
 )
 
 // TransactionRepository implements the transaction.Repository interface

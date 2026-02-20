@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"gogogo/internal/domain/music"
+	"voidline/internal/domain/music"
 )
 
 type MusicRepository struct {

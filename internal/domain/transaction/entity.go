@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"gogogo/internal/domain/timeutil"
+	"voidline/internal/domain/timeutil"
 )
 
 // Transaction represents a financial transaction entity

@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"gogogo/internal/domain/health"
+	"voidline/internal/domain/health"
 )
 
 type HealthRepository struct {

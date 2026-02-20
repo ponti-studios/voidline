@@ -1,4 +1,4 @@
-# Makefile for gogogo CLI and server
+# Makefile for voidline CLI and server
 
 # Variables
 GOCMD=go
@@ -19,7 +19,7 @@ BINDIR=bin
 SRCDIR=.
 
 # Binary name
-BINARY_NAME=gogogo
+BINARY_NAME=voidline
 
 # Database
 DB_PATH ?= $(HOME)/.config/hominem/db.sqlite
@@ -109,7 +109,7 @@ migrate-reset:
 
 # Help message
 help:
-	@echo "Makefile for gogogo CLI and server"
+	@echo "Makefile for voidline CLI and server"
 	@echo ""
 	@echo "Usage:"
 	@echo "  make <target>"

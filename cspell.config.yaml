@@ -2,7 +2,7 @@ $schema: https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell
 ignoreWords:
   - "pontistudios"
   - "todos"
-  - "gogogo"
+  - "voidline"
   - "graphqls"
   - "todos"
 ignorePaths:

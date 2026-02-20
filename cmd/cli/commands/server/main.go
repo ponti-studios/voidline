@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 
-	"gogogo/cmd/cli/commands/server/handlers"
-	"gogogo/internal/application/services"
-	"gogogo/internal/infrastructure/config"
-	"gogogo/internal/infrastructure/persistence/sqlite"
+	"voidline/cmd/cli/commands/server/handlers"
+	"voidline/internal/application/services"
+	"voidline/internal/infrastructure/config"
+	"voidline/internal/infrastructure/persistence/sqlite"
 
-	_ "gogogo/docs"
+	_ "voidline/docs"
 
 	"github.com/charmbracelet/log"
 	"github.com/gin-gonic/gin"
@@ -77,7 +77,7 @@ func Run() error {
 	}
 
 	logger := log.NewWithOptions(os.Stderr, log.Options{
-		Prefix: "gogogo",
+		Prefix: "voidline",
 	})
 	logger.Info("starting REST API server", "url", fmt.Sprintf("http://localhost:%s", port))
 	logger.Info("swagger UI available", "url", fmt.Sprintf("http://localhost:%s/swagger/index.html", port))
