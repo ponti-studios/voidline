@@ -7,7 +7,6 @@ import (
 	"github.com/charmbracelet/fang"
 	"github.com/spf13/cobra"
 
-	"gogogo/cmd/cli/commands/browser"
 	"gogogo/cmd/cli/commands/finance"
 	"gogogo/cmd/cli/commands/flatten"
 	"gogogo/cmd/cli/commands/importcmd/amazon"
@@ -26,34 +25,13 @@ func main() {
 		Short: "CLI utilities and tools",
 	}
 
-	rootCmd.AddCommand(browserCmd())
-	rootCmd.AddCommand(flattenCmd())
+	rootCmd.AddCommand(flatten.Command())
 	rootCmd.AddCommand(finance.Command())
 	rootCmd.AddCommand(serverCmd())
 	rootCmd.AddCommand(importCmd())
 
 	if err := fang.Execute(context.Background(), rootCmd); err != nil {
 		os.Exit(1)
-	}
-}
-
-func browserCmd() *cobra.Command {
-	return &cobra.Command{
-		Use:   "browser",
-		Short: "Browser automation tools",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return browser.Run()
-		},
-	}
-}
-
-func flattenCmd() *cobra.Command {
-	return &cobra.Command{
-		Use:   "flatten",
-		Short: "Flatten directory structure",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return flatten.Run()
-		},
 	}
 }
 

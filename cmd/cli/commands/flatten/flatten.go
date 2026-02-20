@@ -1,13 +1,14 @@
 package flatten
 
 import (
-	"flag"
 	"fmt"
 	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/spf13/cobra"
 )
 
 type Config struct {
@@ -65,26 +66,41 @@ func moveFile(path string, config Config) error {
 	return nil
 }
 
-func Run() error {
+func Command() *cobra.Command {
 	config := Config{}
-	flagSet := flag.NewFlagSet("flatten", flag.ExitOnError)
-	flagSet.BoolVar(&config.dryRun, "d", false, "Dry run mode")
-	flagSet.BoolVar(&config.includeParentDir, "p", false, "Include parent directory name in filename")
-	flagSet.StringVar(&config.directory, "dir", "", "Directory to flatten")
-	flagSet.Parse(os.Args[2:])
 
+	cmd := &cobra.Command{
+		Use:   "flatten",
+		Short: "Flatten directory structure",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return run(config)
+		},
+	}
+
+	cmd.Flags().BoolVar(&config.dryRun, "d", false, "Dry run mode")
+	cmd.Flags().BoolVar(&config.includeParentDir, "p", false, "Include parent directory name in filename")
+	cmd.Flags().StringVar(&config.directory, "dir", "", "Directory to flatten")
+
+	if err := cmd.MarkFlagRequired("dir"); err != nil {
+		panic(err)
+	}
+
+	return cmd
+}
+
+func Run() error {
+	cmd := Command()
+	cmd.SetArgs(os.Args[1:])
+	return cmd.Execute()
+}
+
+func run(config Config) error {
 	if config.directory == "" {
-		fmt.Println("Error: Directory is required")
-		fmt.Println("Usage: flatten -dir <directory> [-d] [-p]")
-		fmt.Println("  -dir  Directory to flatten")
-		fmt.Println("  -d    Dry run mode")
-		fmt.Println("  -p    Include parent directory name in filename")
 		return fmt.Errorf("missing required directory")
 	}
 
 	if info, err := os.Stat(config.directory); err != nil || !info.IsDir() {
-		fmt.Printf("Error: '%s' is not a directory or does not exist\n", config.directory)
-		return fmt.Errorf("invalid directory")
+		return fmt.Errorf("invalid directory: %s", config.directory)
 	}
 
 	log(fmt.Sprintf("Starting file reorganization in directory: %s", config.directory))
@@ -102,8 +118,7 @@ func Run() error {
 	})
 
 	if err != nil {
-		fmt.Printf("Error walking directory: %v\n", err)
-		return err
+		return fmt.Errorf("error walking directory: %w", err)
 	}
 
 	log("Finished file reorganization")

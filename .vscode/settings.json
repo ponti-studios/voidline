@@ -1,4 +1,5 @@
 {
+	"terminal.integrated.shellIntegration.enabled": true,
 	"cSpell.allowCompoundWords": true,
 	"cSpell.customDictionaries": {
 		"typescript": true

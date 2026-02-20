@@ -1,7 +1,6 @@
 package budget
 
 import (
-	"flag"
 	"fmt"
 	"os"
 	"sort"
@@ -20,12 +19,7 @@ var (
 )
 
 // CalendarCommand displays a monthly cash flow calendar
-func CalendarCommand(args []string) int {
-	fs := flag.NewFlagSet("budget-calendar", flag.ExitOnError)
-	month := fs.String("month", "", "Month to display (YYYY-MM, default: current)")
-	showBalances := fs.Bool("balances", true, "Show running balances")
-
-	fs.Parse(args)
+func CalendarCommand(month string, showBalances bool) int {
 
 	// Load budget
 	config, err := LoadConfig()
@@ -36,8 +30,8 @@ func CalendarCommand(args []string) int {
 
 	// Determine month
 	displayMonth := time.Now()
-	if *month != "" {
-		parsed, err := time.Parse("2006-01", *month)
+	if month != "" {
+		parsed, err := time.Parse("2006-01", month)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "❌ Invalid month format. Use YYYY-MM\n")
 			return 1
@@ -46,7 +40,7 @@ func CalendarCommand(args []string) int {
 	}
 
 	// Generate calendar
-	return generateCalendar(config, displayMonth, *showBalances)
+	return generateCalendar(config, displayMonth, showBalances)
 }
 
 func generateCalendar(config *BudgetConfig, month time.Time, showBalances bool) int {

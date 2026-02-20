@@ -1,0 +1,21 @@
+run:
+  timeout: 5m
+  skip-dirs:
+    - bin
+    - docs
+    - tmp
+
+linters:
+  enable:
+    - errcheck
+    - gocritic
+    - gofumpt
+    - goimports
+    - govet
+    - ineffassign
+    - misspell
+    - revive
+    - staticcheck
+
+issues:
+  exclude-use-default: false

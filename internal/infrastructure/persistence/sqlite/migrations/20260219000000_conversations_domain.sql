@@ -1,3 +1,4 @@
+-- +goose Up
 -- Conversations Domain Migration
 -- Imports from TypingMind and OpenAI conversation exports
 
@@ -116,3 +117,13 @@ CREATE TABLE IF NOT EXISTS conversation_files (
 
 CREATE INDEX IF NOT EXISTS idx_files_conversation ON conversation_files(conversation_id);
 CREATE INDEX IF NOT EXISTS idx_files_character ON conversation_files(character_id);
+
+-- +goose Down
+DROP TABLE IF EXISTS conversation_files;
+DROP TABLE IF EXISTS conversation_messages;
+DROP TABLE IF EXISTS conversations;
+DROP TABLE IF EXISTS conversation_settings;
+DROP TABLE IF EXISTS conversation_prompts;
+DROP TABLE IF EXISTS conversation_characters;
+DROP TABLE IF EXISTS conversation_folders;
+DROP TABLE IF EXISTS conversation_sources;

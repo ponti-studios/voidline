@@ -2,7 +2,6 @@ package finance
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
 
@@ -42,71 +41,111 @@ func budgetInitCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "init",
 		Short: "Create a new budget interactively",
-		Run: func(cmd *cobra.Command, args []string) {
-			if code := budget.HandleBudgetCommand("init", args); code != 0 {
-				os.Exit(code)
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if code := budget.InitCommand(); code != 0 {
+				return fmt.Errorf("budget init failed with exit code %d", code)
 			}
+			return nil
 		},
 	}
 }
 
 func budgetShowCmd() *cobra.Command {
-	return &cobra.Command{
+	var view string
+	var month string
+
+	cmd := &cobra.Command{
 		Use:   "show",
 		Short: "Display current budget status",
-		Run: func(cmd *cobra.Command, args []string) {
-			if code := budget.HandleBudgetCommand("show", args); code != 0 {
-				os.Exit(code)
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if code := budget.ShowCommand(view, month); code != 0 {
+				return fmt.Errorf("budget show failed with exit code %d", code)
 			}
+			return nil
 		},
 	}
+
+	cmd.Flags().StringVar(&view, "view", "summary", "View type: summary, categories, cashflow, goals")
+	cmd.Flags().StringVar(&month, "month", "", "Month to show (YYYY-MM format, default: current)")
+
+	return cmd
 }
 
 func budgetCalendarCmd() *cobra.Command {
-	return &cobra.Command{
+	var month string
+	var showBalances bool
+
+	cmd := &cobra.Command{
 		Use:   "calendar",
 		Short: "Show cash flow calendar",
-		Run: func(cmd *cobra.Command, args []string) {
-			if code := budget.HandleBudgetCommand("calendar", args); code != 0 {
-				os.Exit(code)
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if code := budget.CalendarCommand(month, showBalances); code != 0 {
+				return fmt.Errorf("budget calendar failed with exit code %d", code)
 			}
+			return nil
 		},
 	}
+
+	cmd.Flags().StringVar(&month, "month", "", "Month to display (YYYY-MM, default: current)")
+	cmd.Flags().BoolVar(&showBalances, "balances", true, "Show running balances")
+
+	return cmd
 }
 
 func budgetScenarioCmd() *cobra.Command {
-	return &cobra.Command{
+	var opts budget.ScenarioOptions
+
+	cmd := &cobra.Command{
 		Use:   "scenario",
 		Short: "Test what-if scenarios",
-		Run: func(cmd *cobra.Command, args []string) {
-			if code := budget.HandleBudgetCommand("scenario", args); code != 0 {
-				os.Exit(code)
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if code := budget.ScenarioCommand(opts); code != 0 {
+				return fmt.Errorf("budget scenario failed with exit code %d", code)
 			}
+			return nil
 		},
 	}
+
+	cmd.Flags().StringVar(&opts.Name, "name", "", "Scenario name (optional)")
+	cmd.Flags().StringVar(&opts.ReduceExpense, "reduce-expense", "", "Reduce expense by percentage (format: 'Expense Name:50')")
+	cmd.Flags().StringVar(&opts.IncreaseExpense, "increase-expense", "", "Increase expense by percentage (format: 'Expense Name:50')")
+	cmd.Flags().StringVar(&opts.RemoveExpense, "remove-expense", "", "Remove expense entirely")
+	cmd.Flags().StringVar(&opts.AddExpense, "add-expense", "", "Add new expense (format: 'Name:Amount')")
+	cmd.Flags().StringVar(&opts.ReduceIncome, "reduce-income", "", "Reduce income by percentage (format: 'Income Name:50')")
+	cmd.Flags().StringVar(&opts.IncreaseIncome, "increase-income", "", "Increase income by percentage (format: 'Income Name:50')")
+	cmd.Flags().StringVar(&opts.AddIncome, "add-income", "", "Add new income (format: 'Name:Amount')")
+	cmd.Flags().StringVar(&opts.ExtendGoal, "extend-goal", "", "Extend goal timeline (format: 'Goal Name:6' months)")
+
+	return cmd
 }
 
 func budgetExportCmd() *cobra.Command {
-	return &cobra.Command{
+	var format string
+	var output string
+
+	cmd := &cobra.Command{
 		Use:   "export",
 		Short: "Export budget to various formats",
-		Run: func(cmd *cobra.Command, args []string) {
-			if code := budget.HandleBudgetCommand("export", args); code != 0 {
-				os.Exit(code)
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if code := budget.ExportCommand(format, output); code != 0 {
+				return fmt.Errorf("budget export failed with exit code %d", code)
 			}
+			return nil
 		},
 	}
+
+	cmd.Flags().StringVar(&format, "format", "csv", "Export format: csv, json, yaml")
+	cmd.Flags().StringVar(&output, "output", "", "Output file (default: stdout)")
+
+	return cmd
 }
 
 func calculatorCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "calculator",
 		Short: "Goal calculator (interactive TUI)",
-		Run: func(cmd *cobra.Command, args []string) {
-			if err := RunCLI(); err != nil {
-				fmt.Fprintf(cmd.ErrOrStderr(), "Error: %v\n", err)
-				os.Exit(1)
-			}
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return RunCLI()
 		},
 	}
 }
@@ -154,8 +193,12 @@ func reportCmd() *cobra.Command {
 	cmd.Flags().StringArrayVar(&accounts, "account", []string{}, "Filter by account")
 	cmd.Flags().StringArrayVar(&categories, "category", []string{}, "Filter by category")
 
-	cmd.MarkFlagRequired("db")
-	cmd.MarkFlagRequired("type")
+	if err := cmd.MarkFlagRequired("db"); err != nil {
+		panic(err)
+	}
+	if err := cmd.MarkFlagRequired("type"); err != nil {
+		panic(err)
+	}
 
 	return cmd
 }
@@ -179,7 +222,9 @@ func dashboardCmd() *cobra.Command {
 	cmd.Flags().StringVar(&dbPath, "db", "", "Path to SQLite database (required)")
 	cmd.Flags().StringVar(&format, "format", "table", "Output format: table, json")
 
-	cmd.MarkFlagRequired("db")
+	if err := cmd.MarkFlagRequired("db"); err != nil {
+		panic(err)
+	}
 
 	return cmd
 }

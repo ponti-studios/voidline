@@ -2,51 +2,11 @@ package budget
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"os"
 
 	"gopkg.in/yaml.v3"
 )
-
-// HandleBudgetCommand routes to the appropriate budget subcommand
-func HandleBudgetCommand(command string, args []string) int {
-	// Extract just the arguments after the subcommand
-	// args comes in as: ["budget", "import-csv", "budget.csv"]
-	// We need to pass: ["budget.csv"] or ["--file", "budget.csv"]
-	var subArgs []string
-	for i, arg := range args {
-		if arg == command && i < len(args)-1 {
-			subArgs = args[i+1:]
-			break
-		}
-	}
-
-	// If we didn't find the command in args, try using args as-is (for flags)
-	if subArgs == nil {
-		subArgs = args
-	}
-
-	switch command {
-	case "init":
-		return InitCommand()
-	case "show":
-		return ShowCommand(subArgs)
-	case "calendar":
-		return CalendarCommand(subArgs)
-	case "scenario":
-		return ScenarioCommand(subArgs)
-	case "export":
-		return ExportCommand(subArgs)
-	case "help", "--help", "-h":
-		PrintBudgetUsage()
-		return 0
-	default:
-		fmt.Fprintf(os.Stderr, "Unknown budget command: %s\n\n", command)
-		PrintBudgetUsage()
-		return 1
-	}
-}
 
 // PrintBudgetUsage displays help information
 func PrintBudgetUsage() {
@@ -83,12 +43,7 @@ func PrintBudgetUsage() {
 }
 
 // ExportCommand exports budget to various formats
-func ExportCommand(args []string) int {
-	fs := flag.NewFlagSet("budget-export", flag.ExitOnError)
-	format := fs.String("format", "csv", "Export format: csv, json, yaml")
-	output := fs.String("output", "", "Output file (default: stdout)")
-
-	fs.Parse(args)
+func ExportCommand(format, output string) int {
 
 	// Load budget
 	config, err := LoadConfig()
@@ -97,15 +52,15 @@ func ExportCommand(args []string) int {
 		return 1
 	}
 
-	switch *format {
+	switch format {
 	case "csv":
-		return exportCSV(config, *output)
+		return exportCSV(config, output)
 	case "json":
-		return exportJSON(config, *output)
+		return exportJSON(config, output)
 	case "yaml":
-		return exportYAML(config, *output)
+		return exportYAML(config, output)
 	default:
-		fmt.Fprintf(os.Stderr, "❌ Unknown format: %s. Use csv, json, or yaml\n", *format)
+		fmt.Fprintf(os.Stderr, "❌ Unknown format: %s. Use csv, json, or yaml\n", format)
 		return 1
 	}
 }

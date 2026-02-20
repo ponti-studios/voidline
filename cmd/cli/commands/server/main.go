@@ -9,6 +9,8 @@ import (
 	"gogogo/internal/infrastructure/config"
 	"gogogo/internal/infrastructure/persistence/sqlite"
 
+	_ "gogogo/docs"
+
 	"github.com/charmbracelet/log"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"

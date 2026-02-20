@@ -1,0 +1,579 @@
+basePath: /
+definitions:
+  services.BatchCreateResult:
+    properties:
+      created:
+        type: integer
+      errors:
+        items:
+          type: string
+        type: array
+      skipped:
+        type: integer
+    type: object
+  services.CreateAccountInput:
+    properties:
+      currency:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+    required:
+    - currency
+    - name
+    - type
+    type: object
+  services.CreateCategoryInput:
+    properties:
+      description:
+        type: string
+      domain:
+        type: string
+      name:
+        type: string
+      parentId:
+        type: string
+    required:
+    - domain
+    - name
+    type: object
+  services.CreateTransactionInput:
+    properties:
+      account:
+        type: string
+      amount:
+        type: number
+      category:
+        type: string
+      date:
+        type: string
+      name:
+        type: string
+      note:
+        type: string
+    required:
+    - account
+    - amount
+    - date
+    - name
+    type: object
+  services.CreateTransactionsBatchInput:
+    properties:
+      skipDuplicates:
+        type: boolean
+      transactions:
+        items:
+          $ref: '#/definitions/services.CreateTransactionInput'
+        type: array
+    type: object
+  services.FinanceAccountDTO:
+    properties:
+      balance:
+        type: number
+      currency:
+        type: string
+      id:
+        type: string
+      isActive:
+        type: boolean
+      lastUpdated:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+    type: object
+  services.FinanceCategoryDTO:
+    properties:
+      children:
+        items:
+          $ref: '#/definitions/services.FinanceCategoryDTO'
+        type: array
+      description:
+        type: string
+      domain:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      parentId:
+        type: string
+    type: object
+  services.FinanceDashboardDTO:
+    properties:
+      accounts:
+        items:
+          $ref: '#/definitions/services.FinanceAccountDTO'
+        type: array
+      netWorth:
+        type: number
+      totalBalance:
+        type: number
+    type: object
+  services.FinanceTransactionDTO:
+    properties:
+      account:
+        type: string
+      amount:
+        type: number
+      category:
+        type: string
+      date:
+        type: string
+      id:
+        type: string
+      notes:
+        type: string
+      payee:
+        type: string
+    type: object
+  services.UpdateAccountInput:
+    properties:
+      id:
+        type: string
+      isActive:
+        type: boolean
+      name:
+        type: string
+      type:
+        type: string
+    required:
+    - id
+    type: object
+  services.UpdateCategoryInput:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      parentId:
+        type: string
+    required:
+    - id
+    type: object
+  services.UpdateTransactionInput:
+    properties:
+      account:
+        type: string
+      amount:
+        type: number
+      category:
+        type: string
+      date:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      note:
+        type: string
+    required:
+    - id
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@example.com
+    name: API Support
+    url: http://www.example.com/support
+  description: REST API for financial transaction management
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Finance API
+  version: "1.0"
+paths:
+  /api/v1/accounts:
+    get:
+      consumes:
+      - application/json
+      description: Get list of all financial accounts with balances
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/services.FinanceAccountDTO'
+            type: array
+      summary: Get all accounts
+      tags:
+      - accounts
+    post:
+      consumes:
+      - application/json
+      description: Create a new financial account
+      parameters:
+      - description: Account data
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/services.CreateAccountInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/services.FinanceAccountDTO'
+      summary: Create a new account
+      tags:
+      - accounts
+  /api/v1/accounts/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a financial account and all its transactions
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+      summary: Delete an account
+      tags:
+      - accounts
+    get:
+      consumes:
+      - application/json
+      description: Get a single financial account by ID
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/services.FinanceAccountDTO'
+      summary: Get account by ID
+      tags:
+      - accounts
+    put:
+      consumes:
+      - application/json
+      description: Update an existing financial account
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Account data
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/services.UpdateAccountInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/services.FinanceAccountDTO'
+      summary: Update an account
+      tags:
+      - accounts
+  /api/v1/categories:
+    get:
+      consumes:
+      - application/json
+      description: Get list of all financial categories
+      parameters:
+      - description: Filter by domain (finance, health, tracking)
+        in: query
+        name: domain
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/services.FinanceCategoryDTO'
+            type: array
+      summary: Get all categories
+      tags:
+      - categories
+    post:
+      consumes:
+      - application/json
+      description: Create a new financial category
+      parameters:
+      - description: Category data
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/services.CreateCategoryInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/services.FinanceCategoryDTO'
+      summary: Create a new category
+      tags:
+      - categories
+  /api/v1/categories/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a financial category and reassign transactions to Uncategorized
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+      summary: Delete a category
+      tags:
+      - categories
+    put:
+      consumes:
+      - application/json
+      description: Update an existing financial category
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Category data
+        in: body
+        name: category
+        required: true
+        schema:
+          $ref: '#/definitions/services.UpdateCategoryInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/services.FinanceCategoryDTO'
+      summary: Update a category
+      tags:
+      - categories
+  /api/v1/categories/tree:
+    get:
+      consumes:
+      - application/json
+      description: Get categories as a hierarchical tree structure
+      parameters:
+      - description: Filter by domain
+        in: query
+        name: domain
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/services.FinanceCategoryDTO'
+            type: array
+      summary: Get category tree
+      tags:
+      - categories
+  /api/v1/dashboard:
+    get:
+      consumes:
+      - application/json
+      description: Get financial dashboard with total balance, net worth, and accounts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/services.FinanceDashboardDTO'
+      summary: Get dashboard summary
+      tags:
+      - dashboard
+  /api/v1/transactions:
+    get:
+      consumes:
+      - application/json
+      description: Get financial transactions with optional filters
+      parameters:
+      - description: Filter by account
+        in: query
+        name: account
+        type: string
+      - description: Filter by category
+        in: query
+        name: category
+        type: string
+      - description: Filter by start date (YYYY-MM-DD)
+        in: query
+        name: start_date
+        type: string
+      - description: Filter by end date (YYYY-MM-DD)
+        in: query
+        name: end_date
+        type: string
+      - description: Page number
+        in: query
+        name: page
+        type: integer
+      - description: Items per page
+        in: query
+        name: per_page
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/services.FinanceTransactionDTO'
+            type: array
+      summary: Get transactions
+      tags:
+      - transactions
+    post:
+      consumes:
+      - application/json
+      description: Create a new financial transaction
+      parameters:
+      - description: Transaction data
+        in: body
+        name: transaction
+        required: true
+        schema:
+          $ref: '#/definitions/services.CreateTransactionInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/services.FinanceTransactionDTO'
+      summary: Create a new transaction
+      tags:
+      - transactions
+  /api/v1/transactions/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a financial transaction
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Delete a transaction
+      tags:
+      - transactions
+    get:
+      consumes:
+      - application/json
+      description: Get a single financial transaction by ID
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/services.FinanceTransactionDTO'
+      summary: Get transaction by ID
+      tags:
+      - transactions
+    put:
+      consumes:
+      - application/json
+      description: Update an existing financial transaction
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Transaction data
+        in: body
+        name: transaction
+        required: true
+        schema:
+          $ref: '#/definitions/services.UpdateTransactionInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/services.FinanceTransactionDTO'
+      summary: Update a transaction
+      tags:
+      - transactions
+  /api/v1/transactions/batch:
+    post:
+      consumes:
+      - application/json
+      description: Create multiple financial transactions in a batch
+      parameters:
+      - description: Batch transaction data
+        in: body
+        name: batch
+        required: true
+        schema:
+          $ref: '#/definitions/services.CreateTransactionsBatchInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/services.BatchCreateResult'
+      summary: Create multiple transactions
+      tags:
+      - transactions
+schemes:
+- http
+swagger: "2.0"

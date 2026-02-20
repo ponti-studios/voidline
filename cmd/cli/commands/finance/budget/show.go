@@ -1,7 +1,6 @@
 package budget
 
 import (
-	"flag"
 	"fmt"
 	"os"
 	"strings"
@@ -23,12 +22,7 @@ var (
 )
 
 // ShowCommand displays the current budget status
-func ShowCommand(args []string) int {
-	fs := flag.NewFlagSet("budget-show", flag.ExitOnError)
-	view := fs.String("view", "summary", "View type: summary, categories, cashflow, goals")
-	month := fs.String("month", "", "Month to show (YYYY-MM format, default: current)")
-
-	fs.Parse(args)
+func ShowCommand(view, month string) int {
 
 	// Load budget
 	config, err := LoadConfig()
@@ -39,8 +33,8 @@ func ShowCommand(args []string) int {
 
 	// Determine which month to show
 	showMonth := time.Now()
-	if *month != "" {
-		parsed, err := time.Parse("2006-01", *month)
+	if month != "" {
+		parsed, err := time.Parse("2006-01", month)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "❌ Invalid month format. Use YYYY-MM\n")
 			return 1
@@ -49,7 +43,7 @@ func ShowCommand(args []string) int {
 	}
 
 	// Route to appropriate view
-	switch *view {
+	switch view {
 	case "categories":
 		return showCategoriesView(config)
 	case "cashflow":

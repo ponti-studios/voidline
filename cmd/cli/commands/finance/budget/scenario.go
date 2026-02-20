@@ -2,7 +2,6 @@ package budget
 
 import (
 	"bufio"
-	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -21,26 +20,20 @@ var (
 	recommendationStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("226"))
 )
 
+type ScenarioOptions struct {
+	Name            string
+	ReduceExpense   string
+	IncreaseExpense string
+	RemoveExpense   string
+	AddExpense      string
+	ReduceIncome    string
+	IncreaseIncome  string
+	AddIncome       string
+	ExtendGoal      string
+}
+
 // ScenarioCommand allows testing what-if scenarios
-func ScenarioCommand(args []string) int {
-	fs := flag.NewFlagSet("budget-scenario", flag.ExitOnError)
-	name := fs.String("name", "", "Scenario name (optional)")
-
-	// Expense adjustments
-	reduceExpense := fs.String("reduce-expense", "", "Reduce expense by percentage (format: 'Expense Name:50')")
-	increaseExpense := fs.String("increase-expense", "", "Increase expense by percentage (format: 'Expense Name:50')")
-	removeExpense := fs.String("remove-expense", "", "Remove expense entirely")
-	addExpense := fs.String("add-expense", "", "Add new expense (format: 'Name:Amount')")
-
-	// Income adjustments
-	reduceIncome := fs.String("reduce-income", "", "Reduce income by percentage (format: 'Income Name:50')")
-	increaseIncome := fs.String("increase-income", "", "Increase income by percentage (format: 'Income Name:50')")
-	addIncome := fs.String("add-income", "", "Add new income (format: 'Name:Amount')")
-
-	// Goal adjustments
-	extendGoal := fs.String("extend-goal", "", "Extend goal timeline (format: 'Goal Name:6' months)")
-
-	fs.Parse(args)
+func ScenarioCommand(opts ScenarioOptions) int {
 
 	// Load budget
 	config, err := LoadConfig()
@@ -50,7 +43,7 @@ func ScenarioCommand(args []string) int {
 	}
 
 	// Create scenario name if not provided
-	scenarioName := *name
+	scenarioName := opts.Name
 	if scenarioName == "" {
 		scenarioName = fmt.Sprintf("Scenario_%s", time.Now().Format("20060102_150405"))
 	}
@@ -60,8 +53,8 @@ func ScenarioCommand(args []string) int {
 	changes := []string{}
 
 	// Apply expense reductions
-	if *reduceExpense != "" {
-		parts := strings.Split(*reduceExpense, ":")
+	if opts.ReduceExpense != "" {
+		parts := strings.Split(opts.ReduceExpense, ":")
 		if len(parts) == 2 {
 			expenseName := parts[0]
 			var percentage float64
@@ -81,8 +74,8 @@ func ScenarioCommand(args []string) int {
 	}
 
 	// Apply expense increases
-	if *increaseExpense != "" {
-		parts := strings.Split(*increaseExpense, ":")
+	if opts.IncreaseExpense != "" {
+		parts := strings.Split(opts.IncreaseExpense, ":")
 		if len(parts) == 2 {
 			expenseName := parts[0]
 			var percentage float64
@@ -102,9 +95,9 @@ func ScenarioCommand(args []string) int {
 	}
 
 	// Remove expense
-	if *removeExpense != "" {
+	if opts.RemoveExpense != "" {
 		for i, exp := range scenario.CashFlow.Expenses {
-			if strings.EqualFold(exp.Name, *removeExpense) {
+			if strings.EqualFold(exp.Name, opts.RemoveExpense) {
 				changes = append(changes, fmt.Sprintf("Removed %s (was %s/month)",
 					exp.Name, FormatCurrency(exp.Amount)))
 				scenario.CashFlow.Expenses = append(scenario.CashFlow.Expenses[:i],
@@ -115,8 +108,8 @@ func ScenarioCommand(args []string) int {
 	}
 
 	// Add new expense
-	if *addExpense != "" {
-		parts := strings.Split(*addExpense, ":")
+	if opts.AddExpense != "" {
+		parts := strings.Split(opts.AddExpense, ":")
 		if len(parts) == 2 {
 			expenseName := parts[0]
 			var amount float64
@@ -138,8 +131,8 @@ func ScenarioCommand(args []string) int {
 	}
 
 	// Apply income changes (similar logic)
-	if *reduceIncome != "" {
-		parts := strings.Split(*reduceIncome, ":")
+	if opts.ReduceIncome != "" {
+		parts := strings.Split(opts.ReduceIncome, ":")
 		if len(parts) == 2 {
 			incomeName := parts[0]
 			var percentage float64
@@ -158,8 +151,8 @@ func ScenarioCommand(args []string) int {
 		}
 	}
 
-	if *increaseIncome != "" {
-		parts := strings.Split(*increaseIncome, ":")
+	if opts.IncreaseIncome != "" {
+		parts := strings.Split(opts.IncreaseIncome, ":")
 		if len(parts) == 2 {
 			incomeName := parts[0]
 			var percentage float64
@@ -178,8 +171,8 @@ func ScenarioCommand(args []string) int {
 		}
 	}
 
-	if *addIncome != "" {
-		parts := strings.Split(*addIncome, ":")
+	if opts.AddIncome != "" {
+		parts := strings.Split(opts.AddIncome, ":")
 		if len(parts) == 2 {
 			incomeName := parts[0]
 			var amount float64
@@ -199,8 +192,8 @@ func ScenarioCommand(args []string) int {
 	}
 
 	// Extend goal timeline
-	if *extendGoal != "" {
-		parts := strings.Split(*extendGoal, ":")
+	if opts.ExtendGoal != "" {
+		parts := strings.Split(opts.ExtendGoal, ":")
 		if len(parts) == 2 {
 			goalName := parts[0]
 			var months int

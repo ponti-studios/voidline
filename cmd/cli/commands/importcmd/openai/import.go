@@ -30,7 +30,9 @@ func Command() *cobra.Command {
 	cmd.Flags().StringVar(&source, "source", "", "Path to OpenAI export directory")
 	cmd.Flags().BoolVar(&skipDuplicates, "skip-duplicates", true, "Skip existing records")
 
-	cmd.MarkFlagRequired("source")
+	if err := cmd.MarkFlagRequired("source"); err != nil {
+		panic(err)
+	}
 
 	return cmd
 }

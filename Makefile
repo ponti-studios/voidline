@@ -8,6 +8,11 @@ GOMOD=$(GOCMD) mod
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
 GOOSE=go run github.com/pressly/goose/v3@latest
+SWAG=go run github.com/swaggo/swag/cmd/swag@v1.16.6
+AIR_VERSION=1.64.5
+GOLANGCI_LINT_VERSION=1.64.8
+GOFUMPT_VERSION=0.9.2
+GOIMPORTS_VERSION=0.21.1
 
 # Directories
 BINDIR=bin
@@ -41,13 +46,34 @@ clean:
 test:
 	$(GOTEST) -v ./...
 
+# Install dev tools
+tools:
+	$(GOCMD) install github.com/swaggo/swag/cmd/swag@v1.16.6
+	$(GOCMD) install github.com/air-verse/air@v$(AIR_VERSION)
+	$(GOCMD) install github.com/golangci/golangci-lint/cmd/golangci-lint@v$(GOLANGCI_LINT_VERSION)
+	$(GOCMD) install mvdan.cc/gofumpt@v$(GOFUMPT_VERSION)
+	$(GOCMD) install golang.org/x/tools/cmd/goimports@v$(GOIMPORTS_VERSION)
+
 # Tidy up the Go module
 tidy:
 	$(GOMOD) tidy
 
+# Generate Swagger docs
+swagger:
+	$(SWAG) init -g cmd/cli/commands/server/main.go -o docs
+
 # Get dependencies
 deps:
 	$(GOGET) -u ./...
+
+# Format Go code
+fmt:
+	@gofumpt -w $$(go list -f '{{.Dir}}' ./...)
+	@goimports -w $$(go list -f '{{.Dir}}' ./...)
+
+# Lint Go code
+lint:
+	@golangci-lint run ./...
 
 # Run the CLI
 run: build
@@ -56,6 +82,10 @@ run: build
 # Run the server
 run-server: build-server
 	./$(BINDIR)/server
+
+# Development server with live reload + swagger
+dev:
+	@air -c .air.toml
 
 # Install goose
 install-goose:
@@ -90,10 +120,15 @@ help:
 	@echo "  build-server     Build the server"
 	@echo "  clean            Clean the project"
 	@echo "  test             Run tests"
+	@echo "  tools            Install dev tools"
 	@echo "  tidy             Tidy up the Go module"
 	@echo "  deps             Get dependencies"
+	@echo "  fmt              Format Go code"
+	@echo "  lint             Lint Go code"
+	@echo "  swagger          Generate Swagger docs"
 	@echo "  run              Run the CLI"
 	@echo "  run-server       Run the server"
+	@echo "  dev              Run server with live reload"
 	@echo "  install-goose    Install goose"
 	@echo "  migrate-up       Run migrations up"
 	@echo "  migrate-down     Run migrations down"
@@ -104,3 +139,4 @@ help:
 	@echo "Examples:"
 	@echo "  make migrate-up DB_PATH=~/path/to/db.sqlite3"
 	@echo "  make migrate-create NAME=add_users_table"
+	@echo "  make swagger"
