@@ -65,6 +65,7 @@ func Command() *cobra.Command {
 	cmd.AddCommand(newValidateCommand())
 	cmd.AddCommand(newMigrateCommand())
 	cmd.AddCommand(newSlugCommand())
+	cmd.AddCommand(newUpdateCommand())
 
 	return cmd
 }
