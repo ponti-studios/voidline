@@ -11,7 +11,7 @@ def test_version_command() -> None:
     assert "warehouse version" in result.stdout
 
 
-def test_finance_ledger_audit_help() -> None:
-    result = runner.invoke(app, ["finance", "audit", "--help"])
+def test_finance_import_help() -> None:
+    result = runner.invoke(app, ["finance", "import", "--help"])
     assert result.exit_code == 0
-    assert "audit" in result.stdout
+    assert "CSV" in result.stdout
