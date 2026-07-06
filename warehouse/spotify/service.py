@@ -122,7 +122,13 @@ class SpotifyEnrichmentService:
             conn.execute(
                 """
                 UPDATE music_tracks SET
-                    spotify_id = ?,
+                    spotify_id = CASE
+                        WHEN NOT EXISTS (
+                            SELECT 1 FROM music_tracks
+                            WHERE spotify_id = ? AND id != ?
+                        ) THEN ?
+                        ELSE spotify_id
+                    END,
                     popularity = ?,
                     preview_url = ?,
                     genres = ?,
@@ -133,6 +139,8 @@ class SpotifyEnrichmentService:
                 WHERE id = ?
                 """,
                 (
+                    spotify_id,
+                    track_db_id,
                     spotify_id,
                     track_data.get("popularity"),
                     track_data.get("preview_url"),
