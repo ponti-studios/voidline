@@ -1,148 +1,66 @@
-# warehouse
+# Warehouse MCP
 
-Canonical upstream for the `warehouse` personal data CLI.
-`/Users/charlesponti/Developer/toolbox` consumes this repo through an explicit
-sync workflow so the standalone warehouse can ship independently from the
-umbrella tools monorepo.
+Warehouse is a local, read-only Model Context Protocol server for the Warehouse
+SQLite database. It gives MCP-capable LLM hosts structured calendar context and
+data-health information without exposing raw SQL, filesystem access, imports,
+or database mutations.
 
-Personal data warehouse CLI — manage finances, career timeline, people graph,
-and music library enrichment from a single SQLite database.
+## Requirements
 
-## Install
-
-```bash
-uv pip install -e ".[dev]"
-```
+- Node.js 24.14 or newer
+- pnpm 11.1 or newer
+- An existing Warehouse SQLite database with the calendar import migration applied
 
 ## Setup
 
-Warehouse reads its database path from `~/.hominem/config.yml`:
-
-```yaml
-# ~/.hominem/config.yml
-database_path: ~/.hominem/warehouse.db
-```
-
-Create this file and initialize the database:
-
 ```bash
-mkdir -p ~/.hominem
-echo 'database_path: ~/.hominem/warehouse.db' > ~/.hominem/config.yml
-sqlite3 ~/.hominem/warehouse.db < migrations/00001_initial_schema.sql
+pnpm install
+export WAREHOUSE_DATABASE_PATH="$HOME/.hominem/warehouse.db"
+pnpm build
 ```
 
-For development or testing, set `WAREHOUSE_DATABASE_PATH` to override the
-config file:
+The server requires `WAREHOUSE_DATABASE_PATH`; it opens that file in SQLite
+read-only mode and never applies migrations.
 
-```bash
-export WAREHOUSE_DATABASE_PATH=/tmp/test-warehouse.db
+## Connect an MCP host
+
+Build first, then configure a local stdio server in your MCP-capable host:
+
+```json
+{
+  "command": "node",
+  "args": ["/absolute/path/to/warehouse/dist/index.js"],
+  "env": {
+    "WAREHOUSE_DATABASE_PATH": "/absolute/path/to/warehouse.db"
+  }
+}
 ```
 
-## CLI
+`pnpm start` launches the same server from a terminal. Diagnostics are written
+to stderr; stdout is reserved for MCP JSON-RPC.
 
-```bash
-# Finance: canonical ledger import, health checks, and net worth
-uv run warehouse finance import transactions.csv
-uv run warehouse finance doctor
-uv run warehouse finance net-worth
-uv run warehouse finance accounts list
-uv run warehouse finance accounts alias "Amex Gold" "American Express Gold"
-uv run warehouse finance categories list
-uv run warehouse finance reconcile add 12 2026-06-30 15234.22 \
-  --period-start-on 2026-06-01 \
-  --opening-balance 14990.10
-uv run warehouse finance reconcile check
-uv run warehouse finance analyze ledger-audit
+## Available tools
 
-# Career timeline
-uv run warehouse career add "Acme Corp" "Senior Engineer" --start-date "Jan 2020" --current
-uv run warehouse career timeline
+- `calendar_search` — bounded literal search of calendar titles, descriptions,
+  and locations. Results exclude descriptions and all other event-body fields.
+- `calendar_upcoming` — bounded list of non-cancelled upcoming occurrences.
+- `warehouse_data_health` — schema readiness and non-sensitive calendar coverage.
 
-# People graph
-uv run warehouse people add "Jane Smith"
-uv run warehouse people backfill-name-parts --dry-run
-uv run warehouse people normalize-phone-numbers --dry-run
-uv run warehouse people normalize-sort-names --dry-run
-
-# Spotify lookup and enrichment
-export SPOTIFY_CLIENT_ID=...
-export SPOTIFY_CLIENT_SECRET=...
-uv run warehouse spotify track-info --artist "Khruangbin" --track "Pelota"
-uv run warehouse spotify enrich --limit 100
-```
-
-## Command Groups
-
-| Group | Description |
-|-------|-------------|
-| `version` | Show version information |
-| `finance` | Bank-grade ledger import, doctor, net worth, accounts, categories, reconciliation, audit |
-| `career` | Add positions and print a career timeline |
-| `people` | Add people, backfill name parts, normalize phones and sort names |
-| `spotify` | Track metadata lookup and music library enrichment (requires Spotify API credentials) |
-
-### `finance`
-
-- `finance import` — import transactions from CSV (Copilot or generic)
-- `finance doctor` — run data-quality checks on the finance ledger
-- `finance net-worth` — compute account balances and net worth
-- `finance accounts list` `add` `alias` — manage account identities and labels
-- `finance categories list` `add` — manage spend categories
-- `finance reconcile add` `list` `check` — track statement-period balances
-- `finance analyze ledger-audit` — duplicate, transfer, and lifecycle audit
-
-### `career`
-
-- `career add` — add an employment or project position
-- `career timeline` — print a terminal table of employment and project history
-
-### `people`
-
-- `people add` — add a person (auto-parses name parts and sort name)
-- `people backfill-name-parts` — parse display names into first/middle/last
-- `people normalize-phone-numbers` — normalize phone numbers to E.164
-- `people normalize-sort-names` — normalize sort names (Last, First)
-
-### `spotify`
-
-- `spotify track-info` — fetch track metadata from the Spotify Web API
-- `spotify enrich` — enrich `music_tracks` with Spotify metadata
-
-## Database
-
-The `00001_initial_schema.sql` migration creates 175 tables covering finance,
-music, people, career, calendar, media, places, health, tasks, books, art,
-travel, and more. The `finance`, `people`, `career`, and `music_*` tables
-are actively managed by the CLI.
-
-## Configuration
-
-Warehouse reads from `~/.hominem/config.yml`:
-
-```yaml
-database_path: ~/.hominem/warehouse.db
-```
-
-Spotify credentials must be set as environment variables:
-
-```bash
-export SPOTIFY_CLIENT_ID=your-client-id
-export SPOTIFY_CLIENT_SECRET=your-client-secret
-```
+Every calendar result includes stable occurrence/raw-event IDs plus source system
+and source-file basename evidence. The server never returns raw ICS, attendee,
+organizer, description, or absolute source-path data.
 
 ## Development
 
 ```bash
-pytest
-ruff check warehouse tests
-mypy warehouse
+pnpm generate:types # requires WAREHOUSE_DATABASE_PATH
+pnpm typecheck
+pnpm lint
+pnpm test
 ```
 
-## Downstream Sync
+`src/db/generated.ts` is generated from a real Warehouse database with
+`kysely-codegen`; do not edit it manually. Regenerate it after Warehouse schema
+changes.
 
-To sync this repo back into `toolbox`:
-
-```bash
-cd /Users/charlesponti/Developer/toolbox
-just sync-warehouse-from-voidline
-```
+SQL migrations remain the canonical database contract in [`migrations/`](migrations).

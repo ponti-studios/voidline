@@ -1,8 +1,11 @@
 .DS_Store
-.pytest_cache/
-.ruff_cache/
-.venv/
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+test/**/*.js
+test/**/*.js.map
+test/**/*.d.ts
 __pycache__/
 *.pyc
 *.egg-info/
-.python-version

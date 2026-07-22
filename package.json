@@ -1,0 +1,39 @@
+{
+  "name": "warehouse-mcp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Read-only MCP context server for the Warehouse SQLite database",
+  "type": "module",
+  "packageManager": "pnpm@11.1.1",
+  "engines": {
+    "node": ">=24.14.1"
+  },
+  "bin": {
+    "warehouse-mcp": "dist/index.js"
+  },
+  "scripts": {
+    "build": "pnpm clean && tsc -p tsconfig.json",
+    "clean": "node scripts/clean.mjs",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.test.json",
+    "lint": "biome lint src test",
+    "test": "pnpm build && vitest run",
+    "generate:types": "kysely-codegen --dialect sqlite --url \"$WAREHOUSE_DATABASE_PATH\" --out-file src/db/generated.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "better-sqlite3": "^12.11.1",
+    "kysely": "^0.29.3",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.5",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^24.10.1",
+    "kysely-codegen": "^0.20.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.2"
+  }
+}
